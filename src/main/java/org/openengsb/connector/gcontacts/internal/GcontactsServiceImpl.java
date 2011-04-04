@@ -194,7 +194,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
             ContactEntry entry = (ContactEntry) service.getEntry(new URL(id), ContactEntry.class);
             return entry;
         } catch (MalformedURLException e) {
-            throw new DomainMethodExecutionException("unknown type of URL", e);
+            throw new DomainMethodExecutionException("invalid id, id must be an url to the element on the calendar", e);
         } catch (IOException e) {
             throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
