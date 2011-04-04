@@ -66,7 +66,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
             contact.setId(entry.getId());
             return entry.getId();
         } catch (MalformedURLException e) {
-            throw new DomainMethodExecutionException("unknown type of URL", e);
+            // should never be thrown since the URL is static
+            throw new DomainMethodExecutionException("invalid URL", e);
         } catch (IOException e) {
             throw new DomainMethodExecutionException("unable to connect to the insert URL", e);
         } catch (ServiceException e) {
@@ -85,7 +86,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
             URL editUrl = new URL(entry.getEditLink().getHref());
             service.update(editUrl, entry);
         } catch (MalformedURLException e) {
-            throw new DomainMethodExecutionException("unknown type of URL", e);
+            // should never be thrown since url is provided by google
+            throw new DomainMethodExecutionException("invalid URL", e);
         } catch (IOException e) {
             throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
@@ -177,7 +179,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
             }
             return contacts;
         } catch (MalformedURLException e) {
-            throw new DomainMethodExecutionException("unknown type of URL", e);
+            // should never be thrown since the URL is static
+            throw new DomainMethodExecutionException("invalid URL", e);
         } catch (IOException e) {
             throw new DomainMethodExecutionException("unable to connect to the google server", e);
         } catch (ServiceException e) {
