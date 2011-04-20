@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
+import org.openengsb.core.api.Domain;
 
 public class GcontactsServiceInstanceFactoryTest {
 
@@ -31,7 +32,8 @@ public class GcontactsServiceInstanceFactoryTest {
     public void testUpdateServiceInstance() throws Exception {
         GcontactsServiceInstanceFactory gsif = new GcontactsServiceInstanceFactory();
         Map<String, String> attributes = new HashMap<String, String>();
-        GcontactsServiceImpl service = gsif.createServiceInstance("id", attributes);
+        Domain service = gsif.createNewInstance("id");
+        gsif.applyAttributes(service, attributes);
         assertThat(service.getInstanceId(), is("id"));
     }
 
@@ -42,7 +44,7 @@ public class GcontactsServiceInstanceFactoryTest {
         attributes.put("google.user", "user");
         attributes.put("google.password", "pwd");
         GcontactsServiceImpl service = new GcontactsServiceImpl("id");
-        gsif.updateServiceInstance(service, attributes);
+        gsif.applyAttributes(service, attributes);
         assertThat(service.getGooglePassword(), is("pwd"));
         assertThat(service.getGoogleUser(), is("user"));
     }

@@ -17,55 +17,22 @@
 
 package org.openengsb.connector.gcontacts.internal;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.openengsb.core.api.ServiceInstanceFactory;
-import org.openengsb.core.api.descriptor.ServiceDescriptor;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.api.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.domain.contact.ContactDomain;
+import org.openengsb.core.api.Domain;
+import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 
-public class GcontactsServiceInstanceFactory
-        implements ServiceInstanceFactory<ContactDomain, GcontactsServiceImpl> {
+public class GcontactsServiceInstanceFactory extends AbstractConnectorInstanceFactory<GcontactsServiceImpl> {
 
-    public GcontactsServiceInstanceFactory() {
+    @Override
+    public Domain createNewInstance(String id) {
+        return new GcontactsServiceImpl(id);
     }
 
     @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
-        builder.name("service.name").description("service.description");
-
-        builder.attribute(
-            builder.newAttribute().id("google.user").name("google.user.name").description("google.user.description")
-                .build());
-        builder.attribute(builder.newAttribute().id("google.password").name("google.password.name")
-            .description("google.password.description").asPassword().build());
-
-        return builder.build();
-    }
-
-    @Override
-    public void updateServiceInstance(GcontactsServiceImpl instance, Map<String, String> attributes) {
+    public void doApplyAttributes(GcontactsServiceImpl instance, Map<String, String> attributes) {
         instance.setGoogleUser(attributes.get("google.user"));
         instance.setGooglePassword(attributes.get("google.password"));
     }
 
-    @Override
-    public MultipleAttributeValidationResult updateValidation(GcontactsServiceImpl instance,
-            Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-    }
-
-    @Override
-    public GcontactsServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        GcontactsServiceImpl service = new GcontactsServiceImpl(id);
-        updateServiceInstance(service, attributes);
-        return service;
-    }
-
-    @Override
-    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-    }
 }
