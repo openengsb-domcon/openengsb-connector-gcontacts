@@ -24,7 +24,7 @@ limitations under the License.
   <feature name="openengsb-connector-gcontacts" version="${project.version}">
     <feature version="${openengsb.version.range}">openengsb-core</feature>
     <feature version="${openengsb.version.range}">openengsb-domain-contact</feature>
-    <bundle>mvn:org.openengsb.wrapped/com.google.gdata-contacts/${google.contacts.wrapped.version}</bundle>
+    <bundle>mvn:org.openengsb.wrapped/com.google.gdata/${google.contacts.wrapped.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-gcontacts/${project.version}</bundle>
   </feature>
 </features>
