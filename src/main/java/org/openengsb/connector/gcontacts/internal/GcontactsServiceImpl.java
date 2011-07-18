@@ -23,15 +23,19 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.gcontacts.internal.misc.ContactConverter;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.DomainMethodExecutionException;
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.api.edb.EDBEventType;
+import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
+import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.domain.contact.ContactDomain;
+import org.openengsb.domain.contact.ContactDomainEvents;
 import org.openengsb.domain.contact.models.Contact;
 import org.openengsb.domain.contact.models.Location;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gdata.client.contacts.ContactQuery;
 import com.google.gdata.client.contacts.ContactsService;
@@ -40,9 +44,12 @@ import com.google.gdata.data.contacts.ContactFeed;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 
-public class GcontactsServiceImpl extends AbstractOpenEngSBService implements ContactDomain {
+public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService implements ContactDomain {
 
-    private static Log log = LogFactory.getLog(GcontactsServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GcontactsServiceImpl.class);
+
+    private ContactDomainEvents contactEvents;
+    private EngineeringKnowledgeBaseService ekbService;
 
     private AliveState state = AliveState.DISCONNECTED;
     private String googleUser;
@@ -62,8 +69,11 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
             ContactEntry entry = ContactConverter.convertContactToContactEntry(contact);
             URL postUrl = new URL("https://www.google.com/m8/feeds/contacts/default/full");
             entry = service.insert(postUrl, entry);
-            log.info("Successfully created contact " + entry.getId());
+            LOGGER.info("Successfully created contact {}", entry.getId());
             contact.setId(entry.getId());
+            
+            sendEvent(EDBEventType.INSERT, contact);
+            
             return entry.getId();
         } catch (MalformedURLException e) {
             // should never be thrown since the URL is static
@@ -85,6 +95,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
         try {
             URL editUrl = new URL(entry.getEditLink().getHref());
             service.update(editUrl, entry);
+            
+            sendEvent(EDBEventType.UPDATE, contact);
         } catch (MalformedURLException e) {
             // should never be thrown since url is provided by google
             throw new DomainMethodExecutionException("invalid URL", e);
@@ -103,6 +115,10 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
         ContactEntry entry = getContactEntry(id);
         try {
             entry.delete();
+            
+            Contact contact = ekbService.createEmptyModelObject(Contact.class);
+            contact.setId(id);
+            sendEvent(EDBEventType.DELETE, contact);
         } catch (IOException e) {
             throw new DomainMethodExecutionException("unable to connect to the delete URL", e);
         } catch (ServiceException e) {
@@ -142,7 +158,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
         } else if (location != null) {
             StringBuilder builder = new StringBuilder();
             if (location.getAddress() != null) {
-                builder.append(location.getAddress() + "\n");
+                builder.append(location.getAddress()).append("\n");
             }
             if (location.getCity() != null) {
                 builder.append(location.getCity());
@@ -152,10 +168,10 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
                 builder.append(", ");
             }
             if (location.getState() != null) {
-                builder.append(location.getState() + " ");
+                builder.append(location.getState()).append(" ");
             }
             if (location.getZip() != null) {
-                builder.append(location.getZip() + "\n");
+                builder.append(location.getZip()).append("\n");
             }
             if (location.getCountry() != null) {
                 builder.append(location.getCountry());
@@ -164,7 +180,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
         } else if (comment != null) {
             querytext = comment;
         } else {
-            log.info("No parameters were set. Empty list will be returned");
+            LOGGER.info("No parameters were set. Empty list will be returned");
             return contacts;
         }
 
@@ -224,6 +240,20 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
         }
     }
 
+    /**
+     * Sends a CUD event. The type is defined by the enumeration EDBEventType. Also the oid and the role are defined
+     * here.
+     */
+    private void sendEvent(EDBEventType type, Contact contact) {
+        String oid = "gcontacts/" + googleUser + "/" + contact.getId();
+        String role = "connector";
+        try {
+            sendEDBEvent(type, contact, contactEvents, oid, role);
+        } catch (EDBException e) {
+            throw new DomainMethodExecutionException(e);
+        }
+    }
+
     public String getGooglePassword() {
         return googlePassword;
     }
@@ -238,5 +268,14 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBService implements Co
 
     public void setGoogleUser(String googleUser) {
         this.googleUser = googleUser;
+    }
+
+    public void setContactEvents(ContactDomainEvents contactEvents) {
+        this.contactEvents = contactEvents;
+    }
+
+    public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
+        this.ekbService = ekbService;
+        ContactConverter.setEkbService(ekbService);
     }
 }
