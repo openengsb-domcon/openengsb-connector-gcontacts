@@ -29,7 +29,10 @@
       <entry key="domain" value="contact" />
       <entry key="connector" value="gcontacts" />
     </service-properties>
-    <bean class="org.openengsb.connector.gcontacts.internal.GcontactsServiceInstanceFactory" />
+    <bean class="org.openengsb.connector.gcontacts.internal.GcontactsServiceInstanceFactory">
+      <property name="contactEvents" ref="contactEvents" />
+      <property name="ekbService" ref="ekbService" />    
+    </bean>
   </service>
 
   <service>
@@ -45,5 +48,9 @@
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+
+  <reference id="contactEvents" interface="org.openengsb.domain.contact.ContactDomainEvents" />
+  <reference id="ekbService" interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService" />
+
 
 </blueprint>
