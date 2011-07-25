@@ -52,5 +52,4 @@
   <reference id="contactEvents" interface="org.openengsb.domain.contact.ContactDomainEvents" />
   <reference id="ekbService" interface="org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService" />
 
-
 </blueprint>

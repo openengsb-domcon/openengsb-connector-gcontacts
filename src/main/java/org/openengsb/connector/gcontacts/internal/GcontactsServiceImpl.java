@@ -246,9 +246,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
      */
     private void sendEvent(EDBEventType type, Contact contact) {
         String oid = "gcontacts/" + googleUser + "/" + contact.getId();
-        String role = "connector";
         try {
-            sendEDBEvent(type, contact, contactEvents, oid, role);
+            sendEDBEvent(type, contact, contactEvents, oid);
         } catch (EDBException e) {
             throw new DomainMethodExecutionException(e);
         }
