@@ -246,7 +246,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
      */
     private void sendEvent(EDBEventType type, Contact contact) {
         try {
-            sendEDBEvent(type, contact, contact.getId(), contactEvents);
+            sendEDBEvent(type, contact, contactEvents);
         } catch (EDBException e) {
             throw new DomainMethodExecutionException(e);
         }
