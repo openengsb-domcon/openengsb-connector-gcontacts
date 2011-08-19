@@ -17,6 +17,9 @@
 
 package org.openengsb.connector.gcontacts.internal;
 
+import java.util.List;
+
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.domain.contact.models.InformationTypeWithValue;
 
 /**
@@ -58,5 +61,18 @@ public class TestInformationTypeWithValue<T> implements InformationTypeWithValue
     @Override
     public T getValue() {
         return value;
+    }
+
+    @Override
+    public void addOpenEngSBModelEntry(OpenEngSBModelEntry arg0) {
+    }
+
+    @Override
+    public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
+        return null;
+    }
+
+    @Override
+    public void removeOpenEngSBModelEntry(String arg0) {        
     }
 }

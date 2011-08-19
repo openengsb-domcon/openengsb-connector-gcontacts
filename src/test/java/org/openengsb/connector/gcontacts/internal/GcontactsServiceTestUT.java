@@ -65,13 +65,13 @@ public class GcontactsServiceTestUT {
             public Object answer(InvocationOnMock invocation) {
                 return new TestInformationTypeWithValue<Object>();
             }
-        }).when(ekbService).createEKBProxyableObject(InformationTypeWithValue.class);
+        }).when(ekbService).createEmptyModelObject(InformationTypeWithValue.class);
         
         doAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) {
                 return new TestLocation();
             }
-        }).when(ekbService).createEKBProxyableObject(Location.class);
+        }).when(ekbService).createEmptyModelObject(Location.class);
         
         service.setEkbService(ekbService);
         

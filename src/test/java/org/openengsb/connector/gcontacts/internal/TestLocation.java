@@ -17,6 +17,9 @@
 
 package org.openengsb.connector.gcontacts.internal;
 
+import java.util.List;
+
+import org.openengsb.core.api.model.OpenEngSBModelEntry;
 import org.openengsb.domain.contact.models.Location;
 
 /**
@@ -77,5 +80,18 @@ public class TestLocation implements Location {
     @Override
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public void addOpenEngSBModelEntry(OpenEngSBModelEntry arg0) {
+    }
+
+    @Override
+    public List<OpenEngSBModelEntry> getOpenEngSBModelEntries() {
+        return null;
+    }
+
+    @Override
+    public void removeOpenEngSBModelEntry(String arg0) {
     }
 }

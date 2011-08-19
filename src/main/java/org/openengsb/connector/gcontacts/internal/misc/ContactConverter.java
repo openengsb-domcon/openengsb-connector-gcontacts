@@ -190,7 +190,7 @@ public final class ContactConverter {
 
         for (Email mail : entry.getEmailAddresses()) {
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ekbService.createEKBProxyableObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(mail.getLabel());
             itwv.setValue(mail.getAddress());
             mails.add(itwv);
@@ -202,7 +202,7 @@ public final class ContactConverter {
 
         for (PhoneNumber number : entry.getPhoneNumbers()) {
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ekbService.createEKBProxyableObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(number.getLabel());
             itwv.setValue(number.getPhoneNumber());
             numbers.add(itwv);
@@ -214,7 +214,7 @@ public final class ContactConverter {
 
         for (Website site : entry.getWebsites()) {
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ekbService.createEKBProxyableObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(site.getLabel());
             itwv.setValue(site.getHref());
             sites.add(itwv);
@@ -228,7 +228,7 @@ public final class ContactConverter {
             String key = event.getLabel();
             Date date = new Date(event.getWhen().getStartTime().getValue());
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<Date> itwv = ekbService.createEKBProxyableObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<Date> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(key);
             itwv.setValue(date);
             dates.add(itwv);
@@ -241,7 +241,7 @@ public final class ContactConverter {
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 date = formatter.parse(birthday.getWhen());
                 @SuppressWarnings("unchecked")
-                InformationTypeWithValue<Date> itwv = ekbService.createEKBProxyableObject(InformationTypeWithValue.class);
+                InformationTypeWithValue<Date> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
                 itwv.setKey("birthday");
                 itwv.setValue(date);
                 dates.add(itwv);
@@ -254,14 +254,14 @@ public final class ContactConverter {
         ArrayList<InformationTypeWithValue<Location>> locations = new ArrayList<InformationTypeWithValue<Location>>();
 
         for (StructuredPostalAddress address : entry.getStructuredPostalAddresses()) {
-            Location loc = ekbService.createEKBProxyableObject(Location.class);
+            Location loc = ekbService.createEmptyModelObject(Location.class);
             loc.setCountry(address.getCountry().getValue());
             loc.setState(address.getRegion().getValue());
             loc.setCity(address.getCity().getValue());
             loc.setZip(address.getPostcode().getValue());
             loc.setAddress(address.getStreet().getValue());
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<Location> itwv = ekbService.createEKBProxyableObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<Location> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(address.getLabel());
             itwv.setValue(loc);
             locations.add(itwv);
