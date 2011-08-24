@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.openengsb.core.api.Domain;
+import org.openengsb.core.api.Connector;
 
 public class GcontactsServiceInstanceFactoryTest {
 
@@ -32,7 +32,7 @@ public class GcontactsServiceInstanceFactoryTest {
     public void testUpdateServiceInstance() throws Exception {
         GcontactsServiceInstanceFactory gsif = new GcontactsServiceInstanceFactory();
         Map<String, String> attributes = new HashMap<String, String>();
-        Domain service = gsif.createNewInstance("id");
+        Connector service = gsif.createNewInstance("id");
         gsif.applyAttributes(service, attributes);
         assertThat(service.getInstanceId(), is("id"));
     }

@@ -20,21 +20,26 @@ package org.openengsb.connector.gcontacts.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.DomainMethodExecutionException;
+import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
+import org.openengsb.domain.contact.ContactDomainEvents;
 import org.openengsb.domain.contact.models.Contact;
 import org.openengsb.domain.contact.models.InformationTypeWithValue;
 import org.openengsb.domain.contact.models.Location;
 
 public class GcontactsServiceTestUT {
-    private GcontactsServiceImpl service;
+    private static GcontactsServiceImpl service;
     private static final String USERNAME = "openengsb.notification.test@gmail.com";
     private static final String PASSWORD = "pwd-openengsb";
 
@@ -43,45 +48,67 @@ public class GcontactsServiceTestUT {
     @BeforeClass
     public static void initiate() {
         cons = new ArrayList<Contact>();
-    }
-
-    @Before
-    public void setup() {
+        
         service = new GcontactsServiceImpl("id");
         service.setGoogleUser(USERNAME);
         service.setGooglePassword(PASSWORD);
+        
+        EngineeringKnowledgeBaseService ekbService = mock(EngineeringKnowledgeBaseService.class);
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                return new TestContactModel();
+            }
+        })
+            .when(ekbService).createEmptyModelObject(Contact.class);
+        
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                return new TestInformationTypeWithValue<Object>();
+            }
+        }).when(ekbService).createEmptyModelObject(InformationTypeWithValue.class);
+        
+        doAnswer(new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) {
+                return new TestLocation();
+            }
+        }).when(ekbService).createEmptyModelObject(Location.class);
+        
+        service.setEkbService(ekbService);
+        
+        ContactDomainEvents domainEvents = mock(ContactDomainEvents.class);
+        service.setContactEvents(domainEvents);        
     }
 
     private Contact createTestContact(String name) {
-        Contact contact = new Contact();
+        Contact contact = new TestContactModel();
 
         contact.setName(name);
 
         ArrayList<InformationTypeWithValue<String>> mails = new ArrayList<InformationTypeWithValue<String>>();
-        mails.add(new InformationTypeWithValue<String>("privat", "test@testacoount.com"));
+        mails.add(new TestInformationTypeWithValue<String>("privat", "test@testacoount.com"));
         contact.setMails(mails);
 
         ArrayList<InformationTypeWithValue<String>> phones = new ArrayList<InformationTypeWithValue<String>>();
-        phones.add(new InformationTypeWithValue<String>("büro", "023803409328409234"));
+        phones.add(new TestInformationTypeWithValue<String>("büro", "023803409328409234"));
         contact.setTelephones(phones);
 
         ArrayList<InformationTypeWithValue<String>> sites = new ArrayList<InformationTypeWithValue<String>>();
-        sites.add(new InformationTypeWithValue<String>("homepage", "openengsb.org"));
+        sites.add(new TestInformationTypeWithValue<String>("homepage", "openengsb.org"));
         contact.setHomepages(sites);
 
         ArrayList<InformationTypeWithValue<Date>> dates = new ArrayList<InformationTypeWithValue<Date>>();
-        dates.add(new InformationTypeWithValue<Date>("birthday", new Date()));
-        dates.add(new InformationTypeWithValue<Date>("jahrestag", new Date()));
+        dates.add(new TestInformationTypeWithValue<Date>("birthday", new Date()));
+        dates.add(new TestInformationTypeWithValue<Date>("jahrestag", new Date()));
         contact.setDates(dates);
 
         ArrayList<InformationTypeWithValue<Location>> locations = new ArrayList<InformationTypeWithValue<Location>>();
-        Location location = new Location();
+        Location location = new TestLocation();
         location.setCountry("Austria");
         location.setState("Vienna");
         location.setCity("Vienna");
         location.setZip("1040");
         location.setAddress("Taubstummengasse 11");
-        locations.add(new InformationTypeWithValue<Location>("Headquarters", location));
+        locations.add(new TestInformationTypeWithValue<Location>("Headquarters", location));
 
         contact.setLocations(locations);
 
@@ -162,7 +189,7 @@ public class GcontactsServiceTestUT {
         Contact contact = createTestContact("testcontact-Retrieve");
         service.createContact(contact);
 
-        Location location = new Location();
+        Location location = new TestLocation();
         location.setAddress("Taubstummengasse 11");
 
         ArrayList<Contact> contacts = service.retrieveContacts(null, null, null, location, null, null);
