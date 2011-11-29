@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.models.Contact;
 import org.openengsb.domain.contact.models.InformationTypeWithValue;
 import org.openengsb.domain.contact.models.Location;
@@ -57,8 +57,6 @@ public final class ContactConverter {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ContactConverter.class);
     
-    private static EngineeringKnowledgeBaseService ekbService;
-
     private ContactConverter() {
     }
 
@@ -181,7 +179,7 @@ public final class ContactConverter {
      * converts a contact entry of google api to a contact object of contact domain
      */
     public static Contact convertContactEntryToContact(ContactEntry entry) {
-        Contact contact = ekbService.createEmptyModelObject(Contact.class);
+        Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
 
         contact.setId(entry.getId());
         contact.setComment(entry.getPlainTextContent());
@@ -190,7 +188,7 @@ public final class ContactConverter {
 
         for (Email mail : entry.getEmailAddresses()) {
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(mail.getLabel());
             itwv.setValue(mail.getAddress());
             mails.add(itwv);
@@ -202,7 +200,7 @@ public final class ContactConverter {
 
         for (PhoneNumber number : entry.getPhoneNumbers()) {
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(number.getLabel());
             itwv.setValue(number.getPhoneNumber());
             numbers.add(itwv);
@@ -214,7 +212,7 @@ public final class ContactConverter {
 
         for (Website site : entry.getWebsites()) {
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(site.getLabel());
             itwv.setValue(site.getHref());
             sites.add(itwv);
@@ -228,7 +226,7 @@ public final class ContactConverter {
             String key = event.getLabel();
             Date date = new Date(event.getWhen().getStartTime().getValue());
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<Date> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<Date> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(key);
             itwv.setValue(date);
             dates.add(itwv);
@@ -241,7 +239,7 @@ public final class ContactConverter {
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 date = formatter.parse(birthday.getWhen());
                 @SuppressWarnings("unchecked")
-                InformationTypeWithValue<Date> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
+                InformationTypeWithValue<Date> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
                 itwv.setKey("birthday");
                 itwv.setValue(date);
                 dates.add(itwv);
@@ -254,14 +252,14 @@ public final class ContactConverter {
         ArrayList<InformationTypeWithValue<Location>> locations = new ArrayList<InformationTypeWithValue<Location>>();
 
         for (StructuredPostalAddress address : entry.getStructuredPostalAddresses()) {
-            Location loc = ekbService.createEmptyModelObject(Location.class);
+            Location loc = ModelUtils.createEmptyModelObject(Location.class);
             loc.setCountry(address.getCountry().getValue());
             loc.setState(address.getRegion().getValue());
             loc.setCity(address.getCity().getValue());
             loc.setZip(address.getPostcode().getValue());
             loc.setAddress(address.getStreet().getValue());
             @SuppressWarnings("unchecked")
-            InformationTypeWithValue<Location> itwv = ekbService.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<Location> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
             itwv.setKey(address.getLabel());
             itwv.setValue(loc);
             locations.add(itwv);
@@ -272,9 +270,5 @@ public final class ContactConverter {
         contact.setName(entry.getName().getFullName().getValue());
 
         return contact;
-    }
-    
-    public static void setEkbService(EngineeringKnowledgeBaseService ekbService) {
-        ContactConverter.ekbService = ekbService;
     }
 }

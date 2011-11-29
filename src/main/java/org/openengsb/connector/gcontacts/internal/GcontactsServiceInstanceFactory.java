@@ -20,19 +20,16 @@ package org.openengsb.connector.gcontacts.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
-import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
 import org.openengsb.domain.contact.ContactDomainEvents;
 
 public class GcontactsServiceInstanceFactory extends AbstractConnectorInstanceFactory<GcontactsServiceImpl> {
 
     private ContactDomainEvents contactEvents;
-    private EngineeringKnowledgeBaseService ekbService;
     
     @Override
     public Connector createNewInstance(String id) {
         GcontactsServiceImpl service = new GcontactsServiceImpl(id);
-        service.setEkbService(ekbService);
         service.setContactEvents(contactEvents);
         return service;
     }
@@ -45,9 +42,5 @@ public class GcontactsServiceInstanceFactory extends AbstractConnectorInstanceFa
     
     public void setContactEvents(ContactDomainEvents contactEvents) {
         this.contactEvents = contactEvents;
-    }
-
-    public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
-        this.ekbService = ekbService;
     }
 }

@@ -20,7 +20,6 @@ package org.openengsb.connector.gcontacts.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
@@ -29,10 +28,8 @@ import java.util.Date;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.openengsb.core.api.DomainMethodExecutionException;
-import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.ContactDomainEvents;
 import org.openengsb.domain.contact.models.Contact;
 import org.openengsb.domain.contact.models.InformationTypeWithValue;
@@ -53,34 +50,12 @@ public class GcontactsServiceTestUT {
         service.setGoogleUser(USERNAME);
         service.setGooglePassword(PASSWORD);
         
-        EngineeringKnowledgeBaseService ekbService = mock(EngineeringKnowledgeBaseService.class);
-        doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) {
-                return new TestContactModel();
-            }
-        })
-            .when(ekbService).createEmptyModelObject(Contact.class);
-        
-        doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) {
-                return new TestInformationTypeWithValue<Object>();
-            }
-        }).when(ekbService).createEmptyModelObject(InformationTypeWithValue.class);
-        
-        doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) {
-                return new TestLocation();
-            }
-        }).when(ekbService).createEmptyModelObject(Location.class);
-        
-        service.setEkbService(ekbService);
-        
         ContactDomainEvents domainEvents = mock(ContactDomainEvents.class);
         service.setContactEvents(domainEvents);        
     }
 
     private Contact createTestContact(String name) {
-        Contact contact = new TestContactModel();
+        Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
 
         contact.setName(name);
 
@@ -102,7 +77,7 @@ public class GcontactsServiceTestUT {
         contact.setDates(dates);
 
         ArrayList<InformationTypeWithValue<Location>> locations = new ArrayList<InformationTypeWithValue<Location>>();
-        Location location = new TestLocation();
+        Location location = ModelUtils.createEmptyModelObject(Location.class);
         location.setCountry("Austria");
         location.setState("Vienna");
         location.setCity("Vienna");
@@ -189,7 +164,7 @@ public class GcontactsServiceTestUT {
         Contact contact = createTestContact("testcontact-Retrieve");
         service.createContact(contact);
 
-        Location location = new TestLocation();
+        Location location = ModelUtils.createEmptyModelObject(Location.class);
         location.setAddress("Taubstummengasse 11");
 
         ArrayList<Contact> contacts = service.retrieveContacts(null, null, null, location, null, null);
@@ -201,9 +176,6 @@ public class GcontactsServiceTestUT {
 
     @AfterClass
     public static void cleanUp() {
-        GcontactsServiceImpl service = new GcontactsServiceImpl("id");
-        service.setGoogleUser(USERNAME);
-        service.setGooglePassword(PASSWORD);
         for (Contact contact : cons) {
             service.deleteContact(contact.getId());
         }

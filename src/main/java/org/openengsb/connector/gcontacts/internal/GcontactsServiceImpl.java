@@ -28,8 +28,8 @@ import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.api.edb.EDBEventType;
 import org.openengsb.core.api.edb.EDBException;
-import org.openengsb.core.api.ekb.EngineeringKnowledgeBaseService;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
+import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.ContactDomain;
 import org.openengsb.domain.contact.ContactDomainEvents;
 import org.openengsb.domain.contact.models.Contact;
@@ -49,7 +49,6 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
     private static final Logger LOGGER = LoggerFactory.getLogger(GcontactsServiceImpl.class);
 
     private ContactDomainEvents contactEvents;
-    private EngineeringKnowledgeBaseService ekbService;
 
     private AliveState state = AliveState.DISCONNECTED;
     private String googleUser;
@@ -116,7 +115,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
         try {
             entry.delete();
             
-            Contact contact = ekbService.createEmptyModelObject(Contact.class);
+            Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
             contact.setId(id);
             sendEvent(EDBEventType.DELETE, contact);
         } catch (IOException e) {
@@ -270,10 +269,5 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
 
     public void setContactEvents(ContactDomainEvents contactEvents) {
         this.contactEvents = contactEvents;
-    }
-
-    public void setEkbService(EngineeringKnowledgeBaseService ekbService) {
-        this.ekbService = ekbService;
-        ContactConverter.setEkbService(ekbService);
     }
 }
