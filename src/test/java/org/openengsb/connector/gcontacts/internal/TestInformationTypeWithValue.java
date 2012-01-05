@@ -20,7 +20,7 @@ package org.openengsb.connector.gcontacts.internal;
 import java.util.List;
 
 import org.openengsb.core.api.model.OpenEngSBModelEntry;
-import org.openengsb.domain.contact.models.InformationTypeWithValue;
+import org.openengsb.domain.contact.InformationTypeWithValue;
 
 /**
  * represents an easy way to store informations with values.

@@ -26,9 +26,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.openengsb.core.common.util.ModelUtils;
-import org.openengsb.domain.contact.models.Contact;
-import org.openengsb.domain.contact.models.InformationTypeWithValue;
-import org.openengsb.domain.contact.models.Location;
+import org.openengsb.domain.contact.Contact;
+import org.openengsb.domain.contact.InformationTypeWithValue;
+import org.openengsb.domain.contact.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

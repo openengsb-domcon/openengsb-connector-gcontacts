@@ -30,10 +30,10 @@ import org.openengsb.core.api.edb.EDBEventType;
 import org.openengsb.core.api.edb.EDBException;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.domain.contact.Contact;
 import org.openengsb.domain.contact.ContactDomain;
 import org.openengsb.domain.contact.ContactDomainEvents;
-import org.openengsb.domain.contact.models.Contact;
-import org.openengsb.domain.contact.models.Location;
+import org.openengsb.domain.contact.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -30,10 +30,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.common.util.ModelUtils;
+import org.openengsb.domain.contact.Contact;
 import org.openengsb.domain.contact.ContactDomainEvents;
-import org.openengsb.domain.contact.models.Contact;
-import org.openengsb.domain.contact.models.InformationTypeWithValue;
-import org.openengsb.domain.contact.models.Location;
+import org.openengsb.domain.contact.InformationTypeWithValue;
+import org.openengsb.domain.contact.Location;
 
 public class GcontactsServiceTestUT {
     private static GcontactsServiceImpl service;
