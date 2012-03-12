@@ -26,13 +26,12 @@ import java.util.Date;
 import org.openengsb.connector.gcontacts.internal.misc.ContactConverter;
 import org.openengsb.core.api.AliveState;
 import org.openengsb.core.api.DomainMethodExecutionException;
-import org.openengsb.core.api.edb.EDBEventType;
-import org.openengsb.core.api.edb.EDBException;
+import org.openengsb.core.api.ekb.EKBCommit;
+import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.Contact;
 import org.openengsb.domain.contact.ContactDomain;
-import org.openengsb.domain.contact.ContactDomainEvents;
 import org.openengsb.domain.contact.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +47,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GcontactsServiceImpl.class);
 
-    private ContactDomainEvents contactEvents;
+    private PersistInterface persistInterface;
 
     private AliveState state = AliveState.DISCONNECTED;
     private String googleUser;
@@ -71,7 +70,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
             LOGGER.info("Successfully created contact {}", entry.getId());
             contact.setId(entry.getId());
             
-            sendEvent(EDBEventType.INSERT, contact);
+            EKBCommit commit = createEKBCommit().addInsert(contact);
+            persistInterface.commit(commit);
             
             return entry.getId();
         } catch (MalformedURLException e) {
@@ -95,7 +95,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
             URL editUrl = new URL(entry.getEditLink().getHref());
             service.update(editUrl, entry);
             
-            sendEvent(EDBEventType.UPDATE, contact);
+            EKBCommit commit = createEKBCommit().addUpdate(contact);
+            persistInterface.commit(commit);
         } catch (MalformedURLException e) {
             // should never be thrown since url is provided by google
             throw new DomainMethodExecutionException("invalid URL", e);
@@ -117,7 +118,8 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
             
             Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
             contact.setId(id);
-            sendEvent(EDBEventType.DELETE, contact);
+            EKBCommit commit = createEKBCommit().addDelete(contact);
+            persistInterface.commit(commit);
         } catch (IOException e) {
             throw new DomainMethodExecutionException("unable to connect to the delete URL", e);
         } catch (ServiceException e) {
@@ -239,18 +241,6 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
         }
     }
 
-    /**
-     * Sends a CUD event. The type is defined by the enumeration EDBEventType. Also the oid and the role are defined
-     * here.
-     */
-    private void sendEvent(EDBEventType type, Contact contact) {
-        try {
-            sendEDBEvent(type, contact, contactEvents);
-        } catch (EDBException e) {
-            throw new DomainMethodExecutionException(e);
-        }
-    }
-
     public String getGooglePassword() {
         return googlePassword;
     }
@@ -267,7 +257,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
         this.googleUser = googleUser;
     }
 
-    public void setContactEvents(ContactDomainEvents contactEvents) {
-        this.contactEvents = contactEvents;
+    public void setPersistInterface(PersistInterface persistInterface) {
+        this.persistInterface = persistInterface;
     }
 }

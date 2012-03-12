@@ -20,17 +20,17 @@ package org.openengsb.connector.gcontacts.internal;
 import java.util.Map;
 
 import org.openengsb.core.api.Connector;
+import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.common.AbstractConnectorInstanceFactory;
-import org.openengsb.domain.contact.ContactDomainEvents;
 
 public class GcontactsServiceInstanceFactory extends AbstractConnectorInstanceFactory<GcontactsServiceImpl> {
 
-    private ContactDomainEvents contactEvents;
+    private PersistInterface persistInterface;
     
     @Override
     public Connector createNewInstance(String id) {
         GcontactsServiceImpl service = new GcontactsServiceImpl(id);
-        service.setContactEvents(contactEvents);
+        service.setPersistInterface(persistInterface);
         return service;
     }
 
@@ -40,7 +40,7 @@ public class GcontactsServiceInstanceFactory extends AbstractConnectorInstanceFa
         instance.setGooglePassword(attributes.get("google.password"));
     }
     
-    public void setContactEvents(ContactDomainEvents contactEvents) {
-        this.contactEvents = contactEvents;
+    public void setPersistInterface(PersistInterface persistInterface) {
+        this.persistInterface = persistInterface;
     }
 }

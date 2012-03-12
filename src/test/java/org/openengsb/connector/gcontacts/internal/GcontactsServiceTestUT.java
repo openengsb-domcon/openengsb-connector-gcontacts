@@ -29,9 +29,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.DomainMethodExecutionException;
+import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.Contact;
-import org.openengsb.domain.contact.ContactDomainEvents;
 import org.openengsb.domain.contact.InformationTypeWithValue;
 import org.openengsb.domain.contact.Location;
 
@@ -50,8 +50,8 @@ public class GcontactsServiceTestUT {
         service.setGoogleUser(USERNAME);
         service.setGooglePassword(PASSWORD);
         
-        ContactDomainEvents domainEvents = mock(ContactDomainEvents.class);
-        service.setContactEvents(domainEvents);        
+        PersistInterface persistInterface = mock(PersistInterface.class);
+        service.setPersistInterface(persistInterface);        
     }
 
     private Contact createTestContact(String name) {

@@ -30,7 +30,7 @@
       <entry key="connector" value="gcontacts" />
     </service-properties>
     <bean class="org.openengsb.connector.gcontacts.internal.GcontactsServiceInstanceFactory">
-      <property name="contactEvents" ref="contactEvents" />
+      <property name="persistInterface" ref="persistInterface" />
     </bean>
   </service>
 
@@ -48,6 +48,6 @@
     </bean>
   </service>
 
-  <reference id="contactEvents" interface="org.openengsb.domain.contact.ContactDomainEvents" />
+  <reference id="persistInterface" interface="org.openengsb.core.api.ekb.PersistInterface" />
 
 </blueprint>
