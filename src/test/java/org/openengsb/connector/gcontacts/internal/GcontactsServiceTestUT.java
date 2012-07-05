@@ -30,7 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.api.ekb.PersistInterface;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.Contact;
 import org.openengsb.domain.contact.InformationTypeWithValue;
 import org.openengsb.domain.contact.Location;
@@ -55,35 +54,35 @@ public class GcontactsServiceTestUT {
     }
 
     private Contact createTestContact(String name) {
-        Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
+        Contact contact = new Contact();
 
         contact.setName(name);
 
         ArrayList<InformationTypeWithValue<String>> mails = new ArrayList<InformationTypeWithValue<String>>();
-        mails.add(new TestInformationTypeWithValue<String>("privat", "test@testacoount.com"));
+        mails.add(new InformationTypeWithValue<String>("privat", "test@testacoount.com"));
         contact.setMails(mails);
 
         ArrayList<InformationTypeWithValue<String>> phones = new ArrayList<InformationTypeWithValue<String>>();
-        phones.add(new TestInformationTypeWithValue<String>("büro", "023803409328409234"));
+        phones.add(new InformationTypeWithValue<String>("büro", "023803409328409234"));
         contact.setTelephones(phones);
 
         ArrayList<InformationTypeWithValue<String>> sites = new ArrayList<InformationTypeWithValue<String>>();
-        sites.add(new TestInformationTypeWithValue<String>("homepage", "openengsb.org"));
+        sites.add(new InformationTypeWithValue<String>("homepage", "openengsb.org"));
         contact.setHomepages(sites);
 
         ArrayList<InformationTypeWithValue<Date>> dates = new ArrayList<InformationTypeWithValue<Date>>();
-        dates.add(new TestInformationTypeWithValue<Date>("birthday", new Date()));
-        dates.add(new TestInformationTypeWithValue<Date>("jahrestag", new Date()));
+        dates.add(new InformationTypeWithValue<Date>("birthday", new Date()));
+        dates.add(new InformationTypeWithValue<Date>("jahrestag", new Date()));
         contact.setDates(dates);
 
         ArrayList<InformationTypeWithValue<Location>> locations = new ArrayList<InformationTypeWithValue<Location>>();
-        Location location = ModelUtils.createEmptyModelObject(Location.class);
+        Location location = new Location();
         location.setCountry("Austria");
         location.setState("Vienna");
         location.setCity("Vienna");
         location.setZip("1040");
         location.setAddress("Taubstummengasse 11");
-        locations.add(new TestInformationTypeWithValue<Location>("Headquarters", location));
+        locations.add(new InformationTypeWithValue<Location>("Headquarters", location));
 
         contact.setLocations(locations);
 
@@ -164,7 +163,7 @@ public class GcontactsServiceTestUT {
         Contact contact = createTestContact("testcontact-Retrieve");
         service.createContact(contact);
 
-        Location location = ModelUtils.createEmptyModelObject(Location.class);
+        Location location = new Location();
         location.setAddress("Taubstummengasse 11");
 
         ArrayList<Contact> contacts = service.retrieveContacts(null, null, null, location, null, null);

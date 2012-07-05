@@ -29,7 +29,6 @@ import org.openengsb.core.api.DomainMethodExecutionException;
 import org.openengsb.core.api.ekb.EKBCommit;
 import org.openengsb.core.api.ekb.PersistInterface;
 import org.openengsb.core.common.AbstractOpenEngSBConnectorService;
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.Contact;
 import org.openengsb.domain.contact.ContactDomain;
 import org.openengsb.domain.contact.Location;
@@ -46,9 +45,7 @@ import com.google.gdata.util.ServiceException;
 public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService implements ContactDomain {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GcontactsServiceImpl.class);
-
     private PersistInterface persistInterface;
-
     private AliveState state = AliveState.DISCONNECTED;
     private String googleUser;
     private String googlePassword;
@@ -116,7 +113,7 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
         try {
             entry.delete();
             
-            Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
+            Contact contact = new Contact();
             contact.setId(id);
             EKBCommit commit = createEKBCommit().addDelete(contact);
             persistInterface.commit(commit);

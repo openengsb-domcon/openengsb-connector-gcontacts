@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.openengsb.core.common.util.ModelUtils;
 import org.openengsb.domain.contact.Contact;
 import org.openengsb.domain.contact.InformationTypeWithValue;
 import org.openengsb.domain.contact.Location;
@@ -179,7 +178,7 @@ public final class ContactConverter {
      * converts a contact entry of google api to a contact object of contact domain
      */
     public static Contact convertContactEntryToContact(ContactEntry entry) {
-        Contact contact = ModelUtils.createEmptyModelObject(Contact.class);
+        Contact contact = new Contact();
 
         contact.setId(entry.getId());
         contact.setComment(entry.getPlainTextContent());
@@ -187,8 +186,7 @@ public final class ContactConverter {
         ArrayList<InformationTypeWithValue<String>> mails = new ArrayList<InformationTypeWithValue<String>>();
 
         for (Email mail : entry.getEmailAddresses()) {
-            @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = new InformationTypeWithValue<String>();
             itwv.setKey(mail.getLabel());
             itwv.setValue(mail.getAddress());
             mails.add(itwv);
@@ -199,8 +197,7 @@ public final class ContactConverter {
         ArrayList<InformationTypeWithValue<String>> numbers = new ArrayList<InformationTypeWithValue<String>>();
 
         for (PhoneNumber number : entry.getPhoneNumbers()) {
-            @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = new InformationTypeWithValue<String>();
             itwv.setKey(number.getLabel());
             itwv.setValue(number.getPhoneNumber());
             numbers.add(itwv);
@@ -211,8 +208,7 @@ public final class ContactConverter {
         ArrayList<InformationTypeWithValue<String>> sites = new ArrayList<InformationTypeWithValue<String>>();
 
         for (Website site : entry.getWebsites()) {
-            @SuppressWarnings("unchecked")
-            InformationTypeWithValue<String> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<String> itwv = new InformationTypeWithValue<String>();
             itwv.setKey(site.getLabel());
             itwv.setValue(site.getHref());
             sites.add(itwv);
@@ -225,8 +221,7 @@ public final class ContactConverter {
         for (Event event : entry.getEvents()) {
             String key = event.getLabel();
             Date date = new Date(event.getWhen().getStartTime().getValue());
-            @SuppressWarnings("unchecked")
-            InformationTypeWithValue<Date> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<Date> itwv = new InformationTypeWithValue<Date>();
             itwv.setKey(key);
             itwv.setValue(date);
             dates.add(itwv);
@@ -238,8 +233,7 @@ public final class ContactConverter {
             try {
                 DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 date = formatter.parse(birthday.getWhen());
-                @SuppressWarnings("unchecked")
-                InformationTypeWithValue<Date> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
+                InformationTypeWithValue<Date> itwv = new InformationTypeWithValue<Date>();
                 itwv.setKey("birthday");
                 itwv.setValue(date);
                 dates.add(itwv);
@@ -252,14 +246,13 @@ public final class ContactConverter {
         ArrayList<InformationTypeWithValue<Location>> locations = new ArrayList<InformationTypeWithValue<Location>>();
 
         for (StructuredPostalAddress address : entry.getStructuredPostalAddresses()) {
-            Location loc = ModelUtils.createEmptyModelObject(Location.class);
+            Location loc = new Location();
             loc.setCountry(address.getCountry().getValue());
             loc.setState(address.getRegion().getValue());
             loc.setCity(address.getCity().getValue());
             loc.setZip(address.getPostcode().getValue());
             loc.setAddress(address.getStreet().getValue());
-            @SuppressWarnings("unchecked")
-            InformationTypeWithValue<Location> itwv = ModelUtils.createEmptyModelObject(InformationTypeWithValue.class);
+            InformationTypeWithValue<Location> itwv = new InformationTypeWithValue<Location>();
             itwv.setKey(address.getLabel());
             itwv.setValue(loc);
             locations.add(itwv);
