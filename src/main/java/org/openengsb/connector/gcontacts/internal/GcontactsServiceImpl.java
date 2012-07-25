@@ -125,6 +125,12 @@ public class GcontactsServiceImpl extends AbstractOpenEngSBConnectorService impl
             this.state = AliveState.DISCONNECTED;
         }
     }
+    
+    private EKBCommit createEKBCommit() {
+        EKBCommit commit = new EKBCommit();
+        commit.setDomainId(domainId).setConnectorId(connectorId).setInstanceId(instanceId);
+        return commit;
+    }
 
     @Override
     public Contact loadContact(String id) {
